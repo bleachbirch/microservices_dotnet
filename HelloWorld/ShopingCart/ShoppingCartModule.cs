@@ -6,7 +6,7 @@ namespace ShopingCart
     public class ShoppingCartModule: NancyModule
     {
         public ShoppingCartModule(IShoppingCartStore shoppingCartStore,
-            IProductCatalog productCatalog,
+            IProductCatalogClient productCatalog,
             IEventStore eventStore) 
             : base("/shoppingcart")
         {

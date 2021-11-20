@@ -4,9 +4,9 @@
     {
         public int UserId { get; set; }
 
-        public IEnumerable<Product> Items { get; set; } = Enumerable.Empty<Product>();
+        public IEnumerable<ShoppingCartItem> Items { get; set; } = Enumerable.Empty<ShoppingCartItem>();
 
-        public void AddItems(IEnumerable<Product> shoppingCartItems, IEventStore eventStore)
+        public void AddItems(IEnumerable<ShoppingCartItem> shoppingCartItems, IEventStore eventStore)
         {
             throw new NotImplementedException();
         }
