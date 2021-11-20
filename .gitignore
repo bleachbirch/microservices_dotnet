@@ -5,3 +5,5 @@
 /HelloWorld/.vs/Microservices/v17
 /HelloWorld/HelloWorld/obj
 /HelloWorld/ShopingCart/obj
+/HelloWorld/ShopingCart/bin/Debug/net6.0
+/HelloWorld/.vs/Microservices

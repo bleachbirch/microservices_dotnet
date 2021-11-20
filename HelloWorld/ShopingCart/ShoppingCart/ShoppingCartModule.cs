@@ -24,7 +24,7 @@ namespace ShopingCart
                 var shoppingCart = shoppingCartStore.Get(userId);
                 var shoppingCartItems = await productCatalog.GetShoppingCartItems(productCatalogIds)
                 .ConfigureAwait(false);
-                shoppingCart.AddItems(shoppingCartItems, eventStore);
+                shoppingCart?.AddItems(shoppingCartItems, eventStore);
                 shoppingCartStore.Save(shoppingCart);
 
                 return shoppingCart;
