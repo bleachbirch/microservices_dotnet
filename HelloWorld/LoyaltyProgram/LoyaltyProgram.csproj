@@ -14,7 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="SpecialOffersSubcriber\" />
     <Folder Include="LoyaltyProgramModel\" />
     <Folder Include="NotificatinsClient\" />
     <Folder Include="LoyaltyProgramStore\" />
