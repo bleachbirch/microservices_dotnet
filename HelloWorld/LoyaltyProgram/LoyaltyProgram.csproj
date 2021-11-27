@@ -6,4 +6,17 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Owin" Version="6.0.0" />
+    <PackageReference Include="Nancy" Version="2.0.0" />
+    <PackageReference Include="Nancy.Owin" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="SpecialOffersSubcriber\" />
+    <Folder Include="LoyaltyProgramModel\" />
+    <Folder Include="NotificatinsClient\" />
+    <Folder Include="LoyaltyProgramStore\" />
+  </ItemGroup>
+
 </Project>
