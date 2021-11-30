@@ -12,3 +12,14 @@
 /HelloWorld/LoyaltyProgramEventConsumer/bin/Debug/net6.0
 /HelloWorld/LoyaltyProgramEventConsumer/obj
 /HelloWorld/LoyaltyProgramEventConsumer/LoyaltyProgramEventConsumer.csproj.user
+/microservices/.vs/Microservices
+/microservices/HelloWorld/bin/Debug/net6.0
+/microservices/HelloWorld/obj
+/microservices/LoyaltyProgram/bin/Debug/net6.0
+/microservices/LoyaltyProgram/obj/Debug/net6.0/ref
+/microservices/LoyaltyProgram/obj
+/microservices/LoyaltyProgramEventConsumer/bin/Debug/net6.0
+/microservices/LoyaltyProgramEventConsumer/obj
+/microservices/LoyaltyProgramEventConsumer/LoyaltyProgramEventConsumer.csproj.user
+/microservices/ShopingCart/bin/Debug/net6.0
+/microservices/ShopingCart/obj
