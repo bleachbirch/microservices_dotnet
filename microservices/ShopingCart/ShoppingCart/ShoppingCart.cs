@@ -5,7 +5,11 @@
         private HashSet<ShoppingCartItem> _items = new HashSet<ShoppingCartItem>();
         public int UserId { get; set; }
 
-        public IEnumerable<ShoppingCartItem> Items => _items;
+        public IEnumerable<ShoppingCartItem> Items
+        {
+            get { return _items; }
+            set { _items = new HashSet<ShoppingCartItem>(value); } 
+        };
 
         public void AddItems(IEnumerable<ShoppingCartItem> shoppingCartItems, IEventStore eventStore)
         {

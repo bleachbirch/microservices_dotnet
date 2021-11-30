@@ -7,7 +7,7 @@
         /// </summary>
         /// <param name="userId">Id клиента</param>
         /// <returns>корзина</returns>
-        ShoppingCart Get(int userId);
-        void Save(ShoppingCart shoppingCart);
+        Task<ShoppingCart> Get(int userId);
+        Task Save(ShoppingCart shoppingCart);
     }
 }
