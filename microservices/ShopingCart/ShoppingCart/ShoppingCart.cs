@@ -9,7 +9,7 @@
         {
             get { return _items; }
             set { _items = new HashSet<ShoppingCartItem>(value); } 
-        };
+        }
 
         public void AddItems(IEnumerable<ShoppingCartItem> shoppingCartItems, IEventStore eventStore)
         {
