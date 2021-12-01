@@ -1,53 +1,60 @@
 ﻿using Dapper;
+using EventStore.ClientAPI;
 using Newtonsoft.Json;
 using ShopingCart.EventFeed;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Text;
 
 namespace ShopingCart
 {
     public class EventStore : IEventStore
     {
 
-        private const string _connectionString =
-            "Server=localhost;Database=master;Trusted_Connection=True;InitialCatalog=ShoppingCart;IntegratedSecurity=True";
-
-        private const string _writeEvent =
-            @"insert into EventStore(Name, OccurredAt, Content)
-                values (@Name, @OccurredAt, @Content)";
-
-        private const string _readEvent =
-            @"select * from EventStore where ID >= @Start and ID <= @End";
+        private const string _connectionString = "discover://http://127.0.0.1:2113/";
+        private readonly IEventStoreConnection _connection = EventStoreConnection.Create(_connectionString);
 
         public async Task<IEnumerable<Event>> GetEvents(long firstEventSequenceNumber, long lastEventSequenceNumber)
         {
-            using(var conn = new SqlConnection(_connectionString))
+            await _connection.ConnectAsync().ConfigureAwait(false);
+
+            var result = await _connection.ReadStreamEventsForwardAsync(
+                "ShoppingCart",
+                start: (int)firstEventSequenceNumber,
+                count: (int)(lastEventSequenceNumber - firstEventSequenceNumber),
+                resolveLinkTos: false).ConfigureAwait(false);
+
+            return result.Events.Select(ev => new
             {
-                return (await conn.QueryAsync<dynamic>(_readEvent, new
+                Content = JsonConvert.DeserializeObject(Encoding.UTF8.GetString(ev.Event.Data)),
+                Metadata = JsonConvert.DeserializeObject<EventMetadata>(Encoding.UTF8.GetString(ev.Event.Metadata))
+            })
+                .Select((ev, index) => new Event
                 {
-                    Start = firstEventSequenceNumber,
-                    End = lastEventSequenceNumber
-                }).ConfigureAwait(false))
-                .Select(row =>
-                {
-                    var content = JsonConvert.DeserializeObject<Event>(row.Content);
-                    return new Event { SequenceNumber = row.ID, Content = content, CreationDateTime = row.OccuredAt, EventName = row.Name };
+                    SequenceNumber = index + firstEventSequenceNumber,
+                    CreationDateTime = ev.Metadata.OccuredAt,
+                    Content = ev.Content,
+                    EventName = ev.Metadata.EventName
                 });
-            }
         }
 
-        public Task Raise(string eventName, object content)
+        public async Task Raise(string eventName, object content)
         {
+            await _connection.ConnectAsync().ConfigureAwait(false);
             var jsonContent = JsonConvert.SerializeObject(content);
-            using(var conn = new SqlConnection(_connectionString))
+            var metaDataJson = JsonConvert.SerializeObject(new EventMetadata
             {
-                return conn.ExecuteAsync(_writeEvent, new 
-                { 
-                    Name = eventName, 
-                    OccurredAt = DateTimeOffset.Now, 
-                    Content = jsonContent 
-                });
-            }
+                OccuredAt = DateTimeOffset.Now,
+                EventName = eventName
+            });
+            var evenData = new EventData(
+                Guid.NewGuid(),
+                "ShoppingCartEvent",
+                isJson: true,
+                data: Encoding.UTF8.GetBytes(jsonContent),
+                metadata: Encoding.UTF8.GetBytes(metaDataJson));
+
+            await _connection.AppendToStreamAsync("ShoppingCart", ExpectedVersion.Any, evenData);
         }
     }
 }
