@@ -23,3 +23,5 @@
 /microservices/LoyaltyProgramEventConsumer/LoyaltyProgramEventConsumer.csproj.user
 /microservices/ShopingCart/bin/Debug/net6.0
 /microservices/ShopingCart/obj
+/microservices/ProductCatalog/bin/Debug/net6.0
+/microservices/ProductCatalog/obj

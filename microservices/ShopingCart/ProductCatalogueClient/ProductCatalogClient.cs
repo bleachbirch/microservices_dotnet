@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Polly;
 using Polly.Retry;
+using System.Net.Http.Headers;
 
 namespace ShopingCart
 {
@@ -11,6 +12,12 @@ namespace ShopingCart
         private static AsyncRetryPolicy exponentialRetryPolicy = Policy
             .Handle<Exception>()
             .WaitAndRetryAsync(3, attempt => TimeSpan.FromMilliseconds(100 * Math.Pow(2, attempt)));
+        private static ICache _cache;
+
+        public ProductCatalogClient(ICache cache)
+        {
+            _cache = cache;
+        }
 
         public async Task<IEnumerable<ShoppingCartItem>> GetShoppingCartItems(int[] productCatalogIds) =>
             await exponentialRetryPolicy.ExecuteAsync(async () => await GetItemsFromCatalogService(productCatalogIds).ConfigureAwait(false))
@@ -25,11 +32,28 @@ namespace ShopingCart
         private static async Task<HttpResponseMessage> RequestProductFromProductCatalogue(int[] productCatalogueIds)
         {
             var productResource = string.Format(getProductPathTemplate, string.Join(",", productCatalogueIds));
-            using(var httpClient = new HttpClient())
+            var response = _cache.Get(productResource) as HttpResponseMessage;
+            if (response == null)
             {
-                httpClient.BaseAddress = new Uri(productCatalogBaseUrl);
-                return await httpClient.GetAsync(productResource).ConfigureAwait(false);
+                using (var httpClient = new HttpClient())
+                {
+                    httpClient.BaseAddress = new Uri(productCatalogBaseUrl);
+                    response = await httpClient.GetAsync(productResource).ConfigureAwait(false);
+                    AddToCache(productResource, response);
+                }
             }
+
+            return response;
+        }
+
+        private static void AddToCache(string productResource, HttpResponseMessage response)
+        {
+            var cacheHeader = response.Headers.FirstOrDefault(h => h.Key =="cache-control");
+            if (string.IsNullOrEmpty(cacheHeader.Key))
+                return;
+            var maxAge = CacheControlHeaderValue.Parse(cacheHeader.Value.ToString()).MaxAge;
+            if (maxAge.HasValue)
+                _cache.Add(productResource, response, maxAge.Value);
         }
 
         private static async Task<IEnumerable<ShoppingCartItem>> ConvertToShoppingCartItems(HttpResponseMessage response)
