@@ -25,3 +25,5 @@
 /microservices/ShopingCart/obj
 /microservices/ProductCatalog/bin/Debug/net6.0
 /microservices/ProductCatalog/obj
+/microservices/ApiGateway/obj
+/microservices/ApiGateway/bin/Debug/net6.0
