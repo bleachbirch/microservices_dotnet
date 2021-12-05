@@ -29,6 +29,7 @@ public class EventSubcriber
 
     private async Task HandleEventsAsync(HttpContent content)
     {
+        var lastSucceededEvent = 0L;
         var events = JsonConvert.DeserializeObject<IEnumerable<SpecialOffersEvent>>(await content.ReadAsStringAsync());
         if(events == null)
         {
@@ -38,19 +39,53 @@ public class EventSubcriber
         foreach (var ev in events)
         {
             dynamic eventData = ev.Content;
-            //Обрабатываем события 'ev' посредством eventData
-            _start = Math.Max(_start, ev.SequenceNumber + 1);
+            if (ShouldSendNotification(eventData))
+            {
+                var notificationSucceeded = await SendNotification(eventData).ConfigureAwait(false);
+                if (!notificationSucceeded)
+                {
+                    return;
+                }
+            }
+            lastSucceededEvent = ev.SequenceNumber + 1;
         }
+        await WriteStartNumber(lastSucceededEvent).ConfigureAwait(false);
+    }
+
+    private async Task WriteStartNumber(long lastSucceededEvent)
+    {
+        //записываем начальный номер в базу данных
+    }
+
+    private async Task<bool> SendNotification(dynamic eventData)
+    {
+        //Отправление с помощью httpClient
+        //Если все ок, возвращает true
+        return true;
+    }
+
+    private bool ShouldSendNotification(dynamic eventData)
+    {
+        //определение на основе бизнес-правил
+        return true;
     }
 
     private async Task<HttpResponseMessage> ReadEvents()
     {
+        var startNumber = await ReadStartNumber().ConfigureAwait(false);
         using(var httpClient = new HttpClient())
         {
             httpClient.BaseAddress = new Uri($"http://{_loyaltyProgramHost}");
-            var response = await httpClient.GetAsync($"/events/?start={_start}&end={_start + _chunkSize}").ConfigureAwait(false);
+            var resource = $"/events/?start={startNumber}&end={_start + _chunkSize}";
+            var response = await httpClient.GetAsync(resource).ConfigureAwait(false);
             return response;
         }
+    }
+
+    private async Task<long> ReadStartNumber()
+    {
+        //Читаем начальный номер из базы
+        return 0L;
     }
 
     public void Start()
