@@ -31,3 +31,5 @@
 /microservices/LoyaltyProgram.UnitTests/bin/Debug/net6.0
 /microservices/EventFeed/obj
 /microservices/EventFeed/bin/Debug/net6.0
+/microservices/LoyaltyProgramIntegrationTests/obj
+/microservices/LoyaltyProgramIntegrationTests/bin/Debug/net6.0

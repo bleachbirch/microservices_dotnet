@@ -10,7 +10,7 @@ namespace EventFeed
     public class EventStore : IEventStore
     {
 
-        private const string _connectionString = "discover://http://127.0.0.1:2113/";
+        private const string _connectionString = "ConnectTo=discover://admin:changeit@127.0.0.1:2113/";
         private readonly IEventStoreConnection _connection = EventStoreConnection.Create(_connectionString);
 
         public async Task<IEnumerable<Event>> GetEvents(long firstEventSequenceNumber, long lastEventSequenceNumber)
