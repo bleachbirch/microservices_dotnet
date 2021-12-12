@@ -1,4 +1,5 @@
-﻿using Nancy;
+﻿using EventFeed;
+using Nancy;
 using Nancy.ModelBinding;
 
 namespace ShopingCart

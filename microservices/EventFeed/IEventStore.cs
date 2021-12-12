@@ -1,6 +1,4 @@
-﻿using ShopingCart.EventFeed;
-
-namespace ShopingCart
+﻿namespace EventFeed
 {
     public interface IEventStore
     {

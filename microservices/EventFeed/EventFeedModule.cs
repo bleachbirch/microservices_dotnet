@@ -1,6 +1,6 @@
 ﻿using Nancy;
 
-namespace ShopingCart.EventFeed
+namespace EventFeed
 {
     public class EventFeedModule: NancyModule
     {

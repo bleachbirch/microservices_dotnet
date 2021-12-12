@@ -1,5 +1,5 @@
 ﻿
-namespace ShopingCart
+namespace EventFeed
 {
     internal class EventMetadata
     {

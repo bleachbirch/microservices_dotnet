@@ -18,7 +18,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LoyaltyProgramEventConsumer
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductCatalog", "ProductCatalog\ProductCatalog.csproj", "{363C7211-D848-473D-AE4B-BFAF55A6EF81}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiGateway", "ApiGateway\ApiGateway.csproj", "{BF2B2C02-0C2A-4620-9906-57AFE857875D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiGateway", "ApiGateway\ApiGateway.csproj", "{BF2B2C02-0C2A-4620-9906-57AFE857875D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LoyaltyProgram.UnitTests", "LoyaltyProgram.UnitTests\LoyaltyProgram.UnitTests.csproj", "{BC67A084-F49B-4FB1-BA79-68043108D1BB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventFeed", "EventFeed\EventFeed.csproj", "{EB871168-E523-486C-B210-45BBDB5AE1E2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -50,6 +54,14 @@ Global
 		{BF2B2C02-0C2A-4620-9906-57AFE857875D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BF2B2C02-0C2A-4620-9906-57AFE857875D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BF2B2C02-0C2A-4620-9906-57AFE857875D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC67A084-F49B-4FB1-BA79-68043108D1BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC67A084-F49B-4FB1-BA79-68043108D1BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC67A084-F49B-4FB1-BA79-68043108D1BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC67A084-F49B-4FB1-BA79-68043108D1BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB871168-E523-486C-B210-45BBDB5AE1E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB871168-E523-486C-B210-45BBDB5AE1E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB871168-E523-486C-B210-45BBDB5AE1E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB871168-E523-486C-B210-45BBDB5AE1E2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

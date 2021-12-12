@@ -1,4 +1,4 @@
-﻿namespace ShopingCart.EventFeed
+﻿namespace EventFeed
 {
     public class Event
     {

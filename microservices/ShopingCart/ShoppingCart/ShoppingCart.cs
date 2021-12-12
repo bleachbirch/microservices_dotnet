@@ -1,4 +1,6 @@
-﻿namespace ShopingCart
+﻿using EventFeed;
+
+namespace ShopingCart
 {
     public class ShoppingCart
     {

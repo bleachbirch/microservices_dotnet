@@ -1,12 +1,11 @@
 ﻿using Dapper;
 using EventStore.ClientAPI;
 using Newtonsoft.Json;
-using ShopingCart.EventFeed;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 
-namespace ShopingCart
+namespace EventFeed
 {
     public class EventStore : IEventStore
     {
