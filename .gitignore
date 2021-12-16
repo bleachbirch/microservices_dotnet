@@ -33,3 +33,5 @@
 /microservices/EventFeed/bin/Debug/net6.0
 /microservices/LoyaltyProgramIntegrationTests/obj
 /microservices/LoyaltyProgramIntegrationTests/bin/Debug/net6.0
+/microservices/OWIN.Middleware/obj
+/microservices/OWIN.Middleware/bin/Debug/net6.0
