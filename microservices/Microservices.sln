@@ -26,7 +26,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventFeed", "EventFeed\Even
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LoyaltyProgram.IntegrationTests", "LoyaltyProgramIntegrationTests\LoyaltyProgram.IntegrationTests.csproj", "{77D0C723-6CB5-427F-8D18-20A05F6BAF68}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OWIN.Middleware", "OWIN.Middleware\OWIN.Middleware.csproj", "{6F3C1DAC-7CDB-492F-B450-5CCDB1B3F28D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OWIN.Middleware", "OWIN.Middleware\OWIN.Middleware.csproj", "{6F3C1DAC-7CDB-492F-B450-5CCDB1B3F28D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OWIN.Middleware.Tests", "OWIN.Middleware.Tests\OWIN.Middleware.Tests.csproj", "{238621EC-BAE7-4F55-B089-BC45E3EAFE8F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -74,6 +76,10 @@ Global
 		{6F3C1DAC-7CDB-492F-B450-5CCDB1B3F28D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6F3C1DAC-7CDB-492F-B450-5CCDB1B3F28D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6F3C1DAC-7CDB-492F-B450-5CCDB1B3F28D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{238621EC-BAE7-4F55-B089-BC45E3EAFE8F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{238621EC-BAE7-4F55-B089-BC45E3EAFE8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{238621EC-BAE7-4F55-B089-BC45E3EAFE8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{238621EC-BAE7-4F55-B089-BC45E3EAFE8F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
