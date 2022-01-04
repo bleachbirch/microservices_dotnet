@@ -4,7 +4,7 @@ using PathString = Microsoft.Owin.PathString;
 
 namespace ShopingCart.Infrastructure
 {
-    public class MonitoringMiddleware
+    internal class MonitoringMiddleware
     {
         private AppFunc _next;
         private Func<Task<bool>> _healthCheck;
