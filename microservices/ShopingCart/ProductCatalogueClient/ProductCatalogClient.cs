@@ -12,11 +12,13 @@ namespace ShopingCart
         private static AsyncRetryPolicy exponentialRetryPolicy = Policy
             .Handle<Exception>()
             .WaitAndRetryAsync(3, attempt => TimeSpan.FromMilliseconds(100 * Math.Pow(2, attempt)));
-        private static ICache _cache;
+        private readonly ICache _cache;
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        public ProductCatalogClient(ICache cache)
+        public ProductCatalogClient(ICache cache, IHttpClientFactory httpClientFactory)
         {
             _cache = cache;
+            _httpClientFactory = httpClientFactory;
         }
 
         public async Task<IEnumerable<ShoppingCartItem>> GetShoppingCartItems(int[] productCatalogIds) =>
@@ -29,13 +31,13 @@ namespace ShopingCart
             return await ConvertToShoppingCartItems(response).ConfigureAwait(false);
         }
 
-        private static async Task<HttpResponseMessage> RequestProductFromProductCatalogue(int[] productCatalogueIds)
+        private async Task<HttpResponseMessage> RequestProductFromProductCatalogue(int[] productCatalogueIds)
         {
             var productResource = string.Format(getProductPathTemplate, string.Join(",", productCatalogueIds));
             var response = _cache.Get(productResource) as HttpResponseMessage;
             if (response == null)
             {
-                using (var httpClient = new HttpClient())
+                using (var httpClient = _httpClientFactory.Create(new Uri(productResource)))
                 {
                     httpClient.BaseAddress = new Uri(productCatalogBaseUrl);
                     response = await httpClient.GetAsync(productResource).ConfigureAwait(false);
@@ -46,7 +48,7 @@ namespace ShopingCart
             return response;
         }
 
-        private static void AddToCache(string productResource, HttpResponseMessage response)
+        private void AddToCache(string productResource, HttpResponseMessage response)
         {
             var cacheHeader = response.Headers.FirstOrDefault(h => h.Key =="cache-control");
             if (string.IsNullOrEmpty(cacheHeader.Key))

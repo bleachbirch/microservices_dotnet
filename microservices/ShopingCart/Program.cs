@@ -5,8 +5,8 @@ using ShopingCart;
 
 var app = ConfigureBuilder().Build();
 
-app.UseOwin(pipeline => pipeline.UseNancy());
-//app.Configure();
+//app.UseOwin(pipeline => pipeline.UseNancy());
+app.Configure();
 
 app.Run();
 
