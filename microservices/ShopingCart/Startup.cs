@@ -14,11 +14,10 @@ namespace ShopingCart
 
             app.UseOwin(pipeline =>
             {
-                //pipeline(next => GlobalErrorLogging.Middleware(next, log));
-                pipeline(next => CorrelationToken.Middleware(next));
-                pipeline(next => RequestLogging.Middleware(next, log));
-                pipeline(next => PerformanceLogging.Middleware(next, log));
                 pipeline
+                .UseCorrelationToken()
+                .UseRequestLogging(log)
+                .UsePerformanceLogging(log)
                 .UseMonitoring()
                 .UseNancy(opt => opt.Bootstrapper = new Bootstrapper(log));
             });

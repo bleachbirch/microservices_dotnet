@@ -6,9 +6,29 @@ using System.Diagnostics;
 
 namespace ShopingCart.Infrastructure
 {
-    public class CorrelationToken
+    public static class LoggingMiddleware
     {
-        public static AppFunc Middleware(AppFunc next)
+        public static Action<Func<Func<IDictionary<string, object>, Task>, Func<IDictionary<string, object>, Task>>> UseCorrelationToken(this Action<Func<Func<IDictionary<string, object>, Task>, Func<IDictionary<string, object>, Task>>> builder)
+        {
+            builder(next => CorrelationToken.Middleware(next));
+            return builder;
+        }
+        public static Action<Func<Func<IDictionary<string, object>, Task>, Func<IDictionary<string, object>, Task>>> UseRequestLogging(this Action<Func<Func<IDictionary<string, object>, Task>, Func<IDictionary<string, object>, Task>>> builder, ILogger log)
+        {
+            builder(next => RequestLogging.Middleware(next, log));
+            return builder;
+        }
+        public static Action<Func<Func<IDictionary<string, object>, Task>, Func<IDictionary<string, object>, Task>>> UsePerformanceLogging(this Action<Func<Func<IDictionary<string, object>, Task>, Func<IDictionary<string, object>, Task>>> builder, ILogger log)
+        {
+            builder(next => PerformanceLogging.Middleware(next, log));
+            return builder;
+        }
+
+    }
+
+    internal class CorrelationToken
+    {
+        internal static AppFunc Middleware(AppFunc next)
         {
             return async env =>
             {
@@ -35,9 +55,9 @@ namespace ShopingCart.Infrastructure
     /// <summary>
     /// Журналирование запросов и ответов
     /// </summary>
-    public class RequestLogging
+    internal class RequestLogging
     {
-        public static AppFunc Middleware(AppFunc next, ILogger log)
+        internal static AppFunc Middleware(AppFunc next, ILogger log)
         {
             return async env =>
             {
@@ -54,9 +74,9 @@ namespace ShopingCart.Infrastructure
     /// <summary>
     /// Изменение длительности выполнения запроса
     /// </summary>
-    public class PerformanceLogging
+    internal class PerformanceLogging
     {
-        public static AppFunc Middleware(AppFunc next, ILogger log)
+        internal static AppFunc Middleware(AppFunc next, ILogger log)
         {
             return async env =>
             {
@@ -65,7 +85,7 @@ namespace ShopingCart.Infrastructure
                 await next(env);
                 stopWatch.Stop();
                 var context = new OwinContext(env);
-                log.Information("Request: {@Method}, {@Path} executed in {RequestTime:000} ms",
+                log.Information("Request: {@Method}, {@Path} executed in {@RequestTime:000} ms",
                     context.Request.Method, context.Request.Path, stopWatch.ElapsedMilliseconds);
             };
         }
