@@ -16,8 +16,8 @@ namespace ShopingCart
             {
                 //pipeline(next => GlobalErrorLogging.Middleware(next, log));
                 pipeline(next => CorrelationToken.Middleware(next));
-                //pipeline(next => RequestLogging.Middleware(next, log));
-                //pipeline(next => PerformanceLogging.Middleware(next, log));
+                pipeline(next => RequestLogging.Middleware(next, log));
+                pipeline(next => PerformanceLogging.Middleware(next, log));
                 pipeline
                 .UseMonitoring()
                 .UseNancy(opt => opt.Bootstrapper = new Bootstrapper(log));
