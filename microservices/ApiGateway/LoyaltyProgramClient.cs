@@ -2,6 +2,7 @@
 using Polly;
 using Polly.Retry;
 using System.Text;
+using IHttpClientFactory = ApiGateway.IHttpClientFactory;
 
 namespace ApiGateway
 {
@@ -16,6 +17,14 @@ namespace ApiGateway
             Policy.Handle<Exception>().CircuitBreakerAsync(5, TimeSpan.FromMinutes(3));
 
         private readonly string _hostName = "http://localhost:5126/";
+        private readonly string _scope = "loyalty_program_write";
+        private readonly HttpClient _httpClient;
+
+        public LoyaltyProgramClient(IHttpClientFactory httpClientFactory)
+        {
+            _httpClient = httpClientFactory.Create(new Uri(_hostName), _scope).GetAwaiter().GetResult() ??
+                throw new NullReferenceException("HttpClientFactory.Create returned null");
+        }
 
         /// <summary>
         /// Регистрация пользователя в программе лояльности
@@ -34,25 +43,18 @@ namespace ApiGateway
 
         private async Task<HttpResponseMessage> DoGetUserSettings(int userId)
         {
-            using(var httpClient = new HttpClient())
-            {
-                httpClient.BaseAddress = new Uri(_hostName);
-                var response = await httpClient.GetAsync($"/users/{userId}");
-                ThrowOnTransientFailure(response);
-                return response;
-            }
+
+            var response = await _httpClient.GetAsync($"/users/{userId}");
+            ThrowOnTransientFailure(response);
+            return response;
         }
 
         private async Task<HttpResponseMessage> DoRegisterUser(LoyaltyProgramUser newUser)
         {
-            using(var httpClient = new HttpClient())
-            {
-                httpClient.BaseAddress = new Uri(_hostName);
-                var response = await httpClient.PostAsync("/users/",
-                    new StringContent(JsonConvert.SerializeObject(newUser), Encoding.UTF8, "application/json"));
-                ThrowOnTransientFailure(response);
-                return response;
-            }
+            var response = await _httpClient.PostAsync("/users/",
+                new StringContent(JsonConvert.SerializeObject(newUser), Encoding.UTF8, "application/json"));
+            ThrowOnTransientFailure(response);
+            return response;
         }
 
         /// <summary>
@@ -62,7 +64,7 @@ namespace ApiGateway
         /// <exception cref="Exception"></exception>
         private void ThrowOnTransientFailure(HttpResponseMessage response)
         {
-            if((int)response.StatusCode < 200 || (int)response.StatusCode > 499)
+            if ((int)response.StatusCode < 200 || (int)response.StatusCode > 499)
             {
                 throw new Exception(response.StatusCode.ToString());
             }
