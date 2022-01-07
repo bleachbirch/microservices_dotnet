@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.Owin;
 using Nancy.Owin;
 using System.IdentityModel.Tokens.Jwt;
@@ -18,6 +19,22 @@ app.UseOwin(pipeline =>
         }
         context.Response.StatusCode = 403;
         return Task.FromResult(0);
+    });
+    pipeline(next => env =>
+    {
+        var context = new OwinContext(env);
+        if (context.Request.Headers.ContainsKey("pos-end-user"))
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            // Читаем и проверяем маркер ID 
+            var userPrincipal = tokenHandler.ValidateToken(
+                context.Request.Headers["pos-end-user"],
+                new TokenValidationParameters(),
+                out SecurityToken token);
+            // Создаем пользователя на основе маркераа ID  и добавляем его в окружение OWIN
+            context.Set("pos-end-user", userPrincipal);
+        }
+        return next(env);
     });
     pipeline.UseNancy(); 
 });

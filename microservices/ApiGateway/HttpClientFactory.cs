@@ -1,5 +1,6 @@
 ﻿using IdentityModel.Client;
 using System.Net.Http.Headers;
+using System.Security.Claims;
 
 namespace ApiGateway
 {
@@ -12,6 +13,7 @@ namespace ApiGateway
     {
         private readonly ClientCredentialsTokenRequest _tokenClient;
         private readonly string _correlationToken;
+        private readonly string _idToken;
 
         public HttpClientFactory(string correlationToken)
         {
@@ -24,6 +26,11 @@ namespace ApiGateway
             };
         }
 
+        public HttpClientFactory(string idToken, string correlationToken) : this(correlationToken)
+        {
+            _idToken = idToken;
+        }
+
         public async Task<HttpClient> Create(Uri uri, string scope)
         {
             var client = new HttpClient() { BaseAddress = uri };
@@ -33,6 +40,10 @@ namespace ApiGateway
             // Добавляем маркер доступа в исходящие запросы
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", response.AccessToken);
             client.DefaultRequestHeaders.Add("Correlation-Token", _correlationToken);
+            if (!string.IsNullOrEmpty(_idToken))
+            {
+                client.DefaultRequestHeaders.Add("pos-end-user", _idToken);
+            }
             return client;
         }
     }

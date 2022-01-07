@@ -8,8 +8,13 @@ namespace LoyaltyProgram.Users
         private IDictionary<int, LoyaltyProgramUser> _registeredUsers = new Dictionary<int, LoyaltyProgramUser>();
         public UsersModule(): base("/users")
         {
-            Post("/", _ =>
+            Post("/", parameters =>
             {
+                var userId = parameters["userId"];
+                if (!_registeredUsers.ContainsKey(userId))
+                {
+                    return HttpStatusCode.Forbidden;
+                }
                 var newUser = this.Bind<LoyaltyProgramUser>();
                 AddRegisteredUser(newUser);
                 return CreatedResponse(newUser);
@@ -17,9 +22,17 @@ namespace LoyaltyProgram.Users
 
             Put("/{userId:int}", parameters =>
             {
+                int.TryParse(Context.CurrentUser.Claims
+                    .FirstOrDefault(claim => claim.Type.StartsWith("id"))?.Value.Split(':').Last() ?? string.Empty, 
+                    out int loggedInUserId);
                 int userId = parameters.userId;
+                if(loggedInUserId != userId)
+                {
+                    return HttpStatusCode.Forbidden;
+                }
+
                 var updatedUser = this.Bind<LoyaltyProgramUser>();
-                //store the updated user to a data store
+                _registeredUsers[userId] = updatedUser;
                 return updatedUser;
             });
 
