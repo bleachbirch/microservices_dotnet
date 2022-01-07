@@ -14,7 +14,7 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
-        var cert = new X509Certificate2(Path.Combine(environment.ContentRootPath, "idsrv3test.pfx"), "idsrv3test");
+        var cert = new X509Certificate2(Path.Combine(environment.ContentRootPath, "idsrv4test.pfx"), "idsrv3test");
 
         // Конфигурация ASP.Net Core, от которой зависит IdentityServer
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
@@ -35,15 +35,16 @@ public class Startup
         services
             .AddAuthentication()
             .AddCookie("Temp");
-    }
 
-    public void Configure(IApplicationBuilder app, ILoggingBuilder loggerBuilder)
-    {
-        loggerBuilder
+        services.AddLogging(loggerBuilder => loggerBuilder
             .AddConsole()
             .AddDebug()
-            .SetMinimumLevel(LogLevel.Trace);
+            .SetMinimumLevel(LogLevel.Trace)
+        );
+    }
 
+    public void Configure(IApplicationBuilder app)
+    {
         // Запускаем IdentityServer
         app.UseIdentityServer()
             .UseStaticFiles()
