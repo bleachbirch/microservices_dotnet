@@ -4,7 +4,7 @@ using ILogger = Serilog.ILogger;
 using AppFunc = System.Func<System.Collections.Generic.IDictionary<string, object>, System.Threading.Tasks.Task>;
 using System.Diagnostics;
 
-namespace ShopingCart.Infrastructure
+namespace Microservice.Logging
 {
     public static class LoggingMiddleware
     {
@@ -21,6 +21,11 @@ namespace ShopingCart.Infrastructure
         public static Action<Func<Func<IDictionary<string, object>, Task>, Func<IDictionary<string, object>, Task>>> UsePerformanceLogging(this Action<Func<Func<IDictionary<string, object>, Task>, Func<IDictionary<string, object>, Task>>> builder, ILogger log)
         {
             builder(next => PerformanceLogging.Middleware(next, log));
+            return builder;
+        }
+        public static Action<Func<Func<IDictionary<string, object>, Task>, Func<IDictionary<string, object>, Task>>> UseGlobalErrorLogging(this Action<Func<Func<IDictionary<string, object>, Task>, Func<IDictionary<string, object>, Task>>> builder, ILogger log)
+        {
+            builder(next => GlobalErrorLogging.Middleware(next, log));
             return builder;
         }
 
@@ -87,6 +92,24 @@ namespace ShopingCart.Infrastructure
                 var context = new OwinContext(env);
                 log.Information("Request: {@Method}, {@Path} executed in {@RequestTime:000} ms",
                     context.Request.Method, context.Request.Path, stopWatch.ElapsedMilliseconds);
+            };
+        }
+    }
+
+    internal class GlobalErrorLogging
+    {
+        public static AppFunc Middleware(AppFunc next, ILogger log)
+        {
+            return async env =>
+            {
+                try
+                {
+                    await next(env);
+                }
+                catch (Exception ex)
+                {
+                    log.Error(ex, "Unhandled exception");
+                }
             };
         }
     }

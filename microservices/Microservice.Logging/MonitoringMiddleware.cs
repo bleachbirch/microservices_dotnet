@@ -1,31 +1,15 @@
-﻿using Dapper;
-using Microsoft.Owin;
-using System.Data.SqlClient;
+﻿using Microsoft.Owin;
 using AppFunc = System.Func<System.Collections.Generic.IDictionary<string, object>, System.Threading.Tasks.Task>;
 using PathString = Microsoft.Owin.PathString;
 
-namespace ShopingCart.Infrastructure
+namespace Microservice.Logging
 {
     public static class MonitoringMiddleware
     {
-        public static Action<Func<Func<IDictionary<string, object>, Task>, Func<IDictionary<string, object>, Task>>> UseMonitoring(this Action<Func<Func<IDictionary<string, object>, Task>, Func<IDictionary<string, object>, Task>>> builder)
+        public static Action<Func<Func<IDictionary<string, object>, Task>, Func<IDictionary<string, object>, Task>>> UseMonitoring(this Action<Func<Func<IDictionary<string, object>, Task>, Func<IDictionary<string, object>, Task>>> builder, Func<Task<bool>> healthCheck)
         {
-            builder(next => new Monitoring(next, HealthCheck).Invoke);
+            builder(next => new Monitoring(next, healthCheck).Invoke);
             return builder;
-        }
-
-        private const string _connectionString =
-            "Server=localhost;Database=master;Trusted_Connection=True;InitialCatalog=ShoppingCart;IntegratedSecurity=True";
-        private const int _threshold = 1000;
-
-        private static async Task<bool> HealthCheck()
-        {
-            using (var conn = new SqlConnection(_connectionString))
-            {
-                //conn.Open();
-                var count = (await conn.QueryAsync<int>("select count(ID) from dbo.ShoppingCart")).Single();
-                return count > _threshold;
-            }
         }
     }
 

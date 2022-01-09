@@ -1,13 +1,29 @@
-﻿using Nancy.Owin;
+﻿using Dapper;
+using Microservice.Logging;
+using Nancy.Owin;
 using Serilog;
 using Serilog.Events;
-using ShopingCart.Infrastructure;
+using System.Data.SqlClient;
 using ILogger = Serilog.ILogger;
 
 namespace ShopingCart
 {
     public static class Startup
     {
+        private const string _connectionString =
+            "Server=localhost;Database=master;Trusted_Connection=True;InitialCatalog=ShoppingCart;IntegratedSecurity=True";
+        private const int _threshold = 1000;
+
+        private static async Task<bool> HealthCheck()
+        {
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                //conn.Open();
+                var count = (await conn.QueryAsync<int>("select count(ID) from dbo.ShoppingCart")).Single();
+                return count > _threshold;
+            }
+        }
+
         public static void Configure(this IApplicationBuilder app)
         {
             var log = ConfigureLogger();
@@ -15,10 +31,7 @@ namespace ShopingCart
             app.UseOwin(pipeline =>
             {
                 pipeline
-                .UseCorrelationToken()
-                .UseRequestLogging(log)
-                .UsePerformanceLogging(log)
-                .UseMonitoring()
+                .UseMonitoringAndLogging(log, HealthCheck)
                 .UseNancy(opt => opt.Bootstrapper = new Bootstrapper(log));
             });
         }

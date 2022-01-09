@@ -39,3 +39,5 @@
 /microservices/OWIN.Middleware.Tests/bin/Debug/net6.0
 /microservices/Login/obj
 /microservices/Login/bin/Debug/net6.0
+/microservices/Microservice.Logging/obj
+/microservices/Microservice.Logging/bin/Debug/net6.0

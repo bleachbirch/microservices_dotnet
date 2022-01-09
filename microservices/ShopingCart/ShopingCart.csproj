@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EventFeed\EventFeed.csproj" />
+    <ProjectReference Include="..\Microservice.Logging\Microservice.Logging.csproj" />
   </ItemGroup>
 
 </Project>
