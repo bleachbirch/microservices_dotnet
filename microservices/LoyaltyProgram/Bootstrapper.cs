@@ -1,8 +1,6 @@
 ﻿using Nancy;
 using Nancy.Bootstrapper;
-using Nancy.Owin;
 using Nancy.TinyIoc;
-using System.Security.Claims;
 
 namespace LoyaltyProgram
 {
@@ -20,11 +18,6 @@ namespace LoyaltyProgram
             };
         }
 
-        protected override void RequestStartup(TinyIoCContainer container, IPipelines pipelines, NancyContext context)
-        {
-            base.RequestStartup(container, pipelines, context);
-            context.CurrentUser = context.GetOwinEnvironment()["pos-end-user"] as ClaimsPrincipal;
-        }
         private void Log(string message, Exception ex)
         {
             //Отправляем параметры в централизованное хранилище журналов

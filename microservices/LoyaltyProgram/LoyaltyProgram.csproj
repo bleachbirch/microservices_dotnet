@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EventFeed\EventFeed.csproj" />
+    <ProjectReference Include="..\Microservice.Auth\Microservice.Auth.csproj" />
   </ItemGroup>
 
 </Project>

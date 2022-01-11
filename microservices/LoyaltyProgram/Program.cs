@@ -3,40 +3,15 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.Owin;
 using Nancy.Owin;
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
+using Microservice.Auth;
 
 var app = ConfigureBuilder().Build();
 
 app.UseOwin(pipeline => 
 {
-    pipeline(next => env =>
-    {
-        var context = new OwinContext(env);
-        var principal = context.Request.User as ClaimsPrincipal;
-        if (principal is not null && principal.HasClaim("scope", "loyalty_program_write"))
-        {
-            return next(env);
-        }
-        context.Response.StatusCode = 403;
-        return Task.FromResult(0);
-    });
-    pipeline(next => env =>
-    {
-        var context = new OwinContext(env);
-        if (context.Request.Headers.ContainsKey("pos-end-user"))
-        {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            // Читаем и проверяем маркер ID 
-            var userPrincipal = tokenHandler.ValidateToken(
-                context.Request.Headers["pos-end-user"],
-                new TokenValidationParameters(),
-                out SecurityToken token);
-            // Создаем пользователя на основе маркераа ID  и добавляем его в окружение OWIN
-            context.Set("pos-end-user", userPrincipal);
-        }
-        return next(env);
-    });
-    pipeline.UseNancy(); 
+    pipeline
+    .UseAuth("loyalty_program_write")
+    .UseNancy(); 
 });
 
 app.Run();
