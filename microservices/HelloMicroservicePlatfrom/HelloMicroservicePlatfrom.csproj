@@ -6,4 +6,11 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microservice.Platform" Version="1.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Owin" Version="6.0.1" />
+    <PackageReference Include="Microsoft.Owin" Version="4.2.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="4.0.1" />
+  </ItemGroup>
+
 </Project>
