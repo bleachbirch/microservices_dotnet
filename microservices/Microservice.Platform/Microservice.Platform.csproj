@@ -10,7 +10,9 @@
     <PackageReference Include="IdentityModel" Version="6.0.0" />
     <PackageReference Include="Microservice.Auth" Version="1.0.0" />
     <PackageReference Include="Microservice.Logging" Version="1.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Owin" Version="6.0.1" />
     <PackageReference Include="Nancy" Version="2.0.0" />
+    <PackageReference Include="Owin.Types" Version="0.8.5" />
     <PackageReference Include="RestSharp" Version="107.0.3" />
   </ItemGroup>
 
