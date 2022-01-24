@@ -74,3 +74,5 @@
 /microservices/ShopingCart/bin/Release/net6.0
 /microservices/ProductCatalog/bin/Release/net6.0
 /microservices/OWIN.Middleware/bin/Release/net6.0
+/microservices/Shop.ApiGateway/bin/Debug/net6.0
+/microservices/Shop.ApiGateway/obj
