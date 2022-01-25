@@ -3,6 +3,7 @@ using Microservice.Platform;
 using IHttpClientFactory = Microservice.Platform.IHttpClientFactory;
 using Newtonsoft.Json;
 using Nancy.ModelBinding;
+using System.Text;
 
 namespace Shop.ApiGateway
 {
@@ -32,6 +33,26 @@ namespace Shop.ApiGateway
                     new StringContent(JsonConvert.SerializeObject(new[] { productId }),
                     System.Text.Encoding.UTF8,
                     "application/json"));
+                var content = await response?.Content.ReadAsStringAsync();
+                var basketProducts = GetBasketProductsFromResponse(content);
+                logger.Information("{@basket}", basketProducts);
+                return View["View/productList", new { ProductList = _products, BasketProducts = basketProducts }];
+            });
+
+            Delete("/shoppingcart/{userId}", async parameters =>
+            {
+                var productId = this.Bind<int>();
+                var userId = (int)parameters["userId"];
+
+                var client = await httpClientFactory.Create(new Uri("http://localhost:5200/"),
+                    "shopping_cart_write");
+                var request = new HttpRequestMessage()
+                {
+                    Method = HttpMethod.Delete,
+                    RequestUri = new Uri(client.BaseAddress, $"/shoppingcart/{userId}/items"),
+                    Content = new StringContent(JsonConvert.SerializeObject(new[] { productId }), Encoding.UTF8, "application/json")
+                };
+                var response = await client.SendAsync(request);
                 var content = await response?.Content.ReadAsStringAsync();
                 var basketProducts = GetBasketProductsFromResponse(content);
                 logger.Information("{@basket}", basketProducts);
