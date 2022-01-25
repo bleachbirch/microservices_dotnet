@@ -2,21 +2,52 @@
 using Microservice.Platform;
 using IHttpClientFactory = Microservice.Platform.IHttpClientFactory;
 using Newtonsoft.Json;
+using Nancy.ModelBinding;
 
 namespace Shop.ApiGateway
 {
     public class GatewayModule : NancyModule
     {
+        private IEnumerable<Product> _products = new List<Product>();
         public GatewayModule(IHttpClientFactory httpClientFactory, Serilog.ILogger logger)
         {
             Get("/productlist", async parameters =>
             {
                 var client = await httpClientFactory.Create(new Uri("http://localhost:5100/"), "product_catalog_read");
-                var products = GetProductListStub();
+                _products = GetProductListStub();
                 client = await httpClientFactory.Create(new Uri("http://localhost:5200/"), "shopping_cart_write");
                 var userId = parameters["userId"];
-                return View["Views/productlist", new { ProductList = products }];
+                var basketProducts = GetBasketProducts(userId, client, logger);
+                return View["Views/productlist", new { ProductList = _products, BasketProducts = basketProducts}];
             });
+
+            Post("/shoppingcart/{userId}/items", async parametrs =>
+            {
+                var productId = this.Bind<int>();
+                var userId = (int)parametrs["userId"];
+
+                var client = await httpClientFactory.Create(new Uri("http://localhost:5200/"),
+                    "shopping_cart_write");
+                var response = await client.PostAsync("/shoppingcart/{userId}/items",
+                    new StringContent(JsonConvert.SerializeObject(new[] { productId }),
+                    System.Text.Encoding.UTF8,
+                    "application/json"));
+                var content = await response?.Content.ReadAsStringAsync();
+                var basketProducts = GetBasketProductsFromResponse(content);
+                logger.Information("{@basket}", basketProducts);
+                return View["View/productList", new { ProductList = _products, BasketProducts = basketProducts }];
+            });
+        }
+
+        private IEnumerable<Product> GetBasketProductsFromResponse(string content)
+        {
+            return JsonConvert.DeserializeObject<ShoppingCart>(content)
+                .Items?
+                .Select(item => new Product
+                {
+                    ProductId = item.ProductCatalogueId,
+                    ProductName = item.ProductName
+                }) ?? new List<Product>();
         }
 
         private async Task<IEnumerable<Product>> GetProductList(HttpClient client, Serilog.ILogger logger)
@@ -32,13 +63,7 @@ namespace Shop.ApiGateway
             var response = await client.GetAsync($"/shoppingcart/{userId}");
             var content = await response?.Content.ReadAsStringAsync();
             logger.Information(content);
-            return JsonConvert.DeserializeObject<ShoppingCart>(content)
-                .Items?
-                .Select(item => new Product 
-                { 
-                    ProductId = item.ProductCatalogueId, 
-                    ProductName = item.ProductName
-                }) ?? new List<Product>();
+            return GetBasketProductsFromResponse(content);
 
         }
         private IEnumerable<Product> GetProductListStub()

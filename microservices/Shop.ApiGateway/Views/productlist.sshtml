@@ -41,5 +41,19 @@
               </div>
             </div>
         </div>
-    </body>
+    </body>    
+<script>
+    function buy(productId) {
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+        if (xhttp.readyState == 4 && xhttp.status == 200) {
+          document.write(xhttp.responseText);
+          document.close();
+        }
+      }
+      xhttp.open('POST', '/shoppingcart/123', true);
+      xhttp.setRequestHeader('Content-type', 'application/json');
+      xhttp.send( JSON.stringify(productId));
+}
+</script>
 </html>
