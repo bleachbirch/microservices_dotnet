@@ -24,6 +24,21 @@
                   </div>
                   @EndEach
                 </div>
+                
+            <div class="col-md-4">
+              <div class="panel panel-info">
+                <div class="panel-heading">Shopping Cart</div>
+                <div class="panel-body">
+                  @Each.BasketProducts
+                    <div>
+                      @Current.ProductName
+                      <button class="btn btn-link" onclick="removeFromBasket(@Current.ProductId);">
+                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                      </button>
+                    </div>
+                  @EndEach
+                </div>
+              </div>
             </div>
         </div>
     </body>
