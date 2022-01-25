@@ -7,6 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Views\productlist.sshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Views\productlist.sshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microservice.Platform" Version="1.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Owin" Version="6.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.2.0" />

@@ -18,7 +18,6 @@ namespace Shop.ApiGateway
         protected override void ApplicationStartup(TinyIoCContainer container, IPipelines pipelines)
         {
             container.Register(_logger);
-            container.UseHttpClientFactory(new NancyContext());
         }
 
         protected override void RequestStartup(TinyIoCContainer container, IPipelines pipelines, NancyContext context)

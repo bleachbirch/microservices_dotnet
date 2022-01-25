@@ -5,9 +5,9 @@ using Microservice.Platform;
 
 namespace Shop.ApiGateway
 {
-    public class Startup
+    public static class Startup
     {
-        public void Configure(IApplicationBuilder app)
+        public static void Configure(this IApplicationBuilder app)
         {
             var logger = ConfigureLogger();
             ConfigureMicroservicePlatform();
@@ -17,17 +17,17 @@ namespace Shop.ApiGateway
                 .UseNancy(opt => opt.Bootstrapper = new Bootstrapper(logger));
         }
 
-        private void ConfigureMicroservicePlatform()
+        private static void ConfigureMicroservicePlatform()
         {
             MicroservicePlatformHelper.Configure("http://localhost:5001/", "api_gateway", "secret");
         }
 
-        private Task<bool> HealthCheck()
+        private static Task<bool> HealthCheck()
         {
             return Task.FromResult(true);
         }
 
-        private Serilog.ILogger ConfigureLogger()
+        private static Serilog.ILogger ConfigureLogger()
         {
             return new LoggerConfiguration()
                 .Enrich.FromLogContext()

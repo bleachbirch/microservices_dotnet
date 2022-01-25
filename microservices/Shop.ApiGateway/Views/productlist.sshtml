@@ -1,0 +1,30 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" 
+            href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" 
+            integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" 
+            crossorigin="anonymous">
+        <title>MicroCommerce.NET</title>
+    </head>
+    <body>
+        <div class="container">
+            <div class="page-header">
+                <h1>MicroCommerce <small> - Product List</small></h1>
+            </div>
+            <div class="row">
+                <div class="col-md-8">
+                  @Each.ProductList 
+                  <div class="row" style="background-color: #eee; border-bottom-style: solid">
+                    <div class="col-md-8">
+                      <h4>@Current.ProductName</h4>
+                      <p>lorem ipsum</p>
+                    </div>
+                    <div class="col-md-4"><p></p><button class="btn btn-primary" type="button" onclick="buy(@Current.ProductId);">BUY!</button></div>
+                  </div>
+                  @EndEach
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
